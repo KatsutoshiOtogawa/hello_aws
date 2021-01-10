@@ -77,18 +77,9 @@ resource "aws_iam_role_policy_attachment" "test-attach" {
   policy_arn = aws_iam_policy.policy.arn
 }
 
-
-# resource "null_resource" "packing_script" {
-#   provisioner "local-exec" {
-#     command = "source pack.sh"
-#   }
-# }
-
 # labmda download dbsample
 resource "aws_lambda_function" "test_lambda" {
-    depends_on = [ 
-        null_resource.packing_script
-     ]
+
   filename      = "dbsample_download.zip"
   function_name = "loaddbsample"
   # set db admin role
