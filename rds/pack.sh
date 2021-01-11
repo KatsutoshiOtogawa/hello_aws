@@ -1,5 +1,6 @@
 cd dbsample_download
-pipenv install boto3 --python 3.8
+# in advence, check virtual environment python version is 3.8
+pipenv install
 VENV=`pipenv --venv`
 cd $VENV/lib/python3.8/site-packages/
 zip -r9 dbsample_download.zip .
