@@ -61,6 +61,7 @@ resource "aws_iam_policy" "policy" {
     {
       "Action": [
         "s3:Write*"
+        ,"s3:List*"
       ],
       "Effect": "Allow",
       "Resource": "${aws_s3_bucket.private.arn}"

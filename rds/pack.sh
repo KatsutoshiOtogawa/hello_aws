@@ -1,3 +1,4 @@
+rm dbsample_download.zip 2> /dev/null
 cd dbsample_download
 # in advence, check virtual environment python version is 3.8
 pipenv install
