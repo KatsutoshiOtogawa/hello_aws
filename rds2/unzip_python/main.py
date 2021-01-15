@@ -5,6 +5,7 @@ import os
 import os.path
 import urllib.parse
 import tempfile
+import zipfile
 
 print('Loading function')      # ②Functionのロードをログに出力
 
@@ -22,15 +23,18 @@ def lambda_handler(event, context):
 
     # [aws](https://docs.aws.amazon.com/lambda/latest/dg/with-s3.html)
     # decode object key. sended key is encoding
-    objectkey = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
+    # objectkey = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
+
+    objectkey = event['Records'][0]['s3']['object']['key']
+
+    print(objectkey)
+    print("before if")
     # 
     if not('folder_action/unzip/' in objectkey ):
         return
 
     print(objectkey)
     bucket = s3.Bucket(os.environ['BUCKET_NAME'])
-
-    import zipfile
 
     with tempfile.TemporaryDirectory() as tmpdir:
         bucket.download_file(objectkey, tmpdir)
@@ -45,8 +49,9 @@ def lambda_handler(event, context):
             map(
                 # 
                 lambda x:bucket.upload_file(x,x.replace(extractdir,''))
-                ,filter(lambda x: os.path.isfile(x), glob.glob(os.path.join(extractdir,'*'), recursive=True)
+                ,filter(lambda x: os.path.isfile(x), glob.glob(os.path.join(extractdir,'*'), recursive=True))
             )
+
             # for val in list(filter(lambda x: os.path.isfile(x), glob.glob(os.path.join(extractdir,'*'), recursive=True))):
             #     bucket.upload_file(
             #         val
@@ -57,14 +62,8 @@ def lambda_handler(event, context):
             # os.path.join('/tmp', 'world.sql.gz')
             # , 'db')
 
-    
-
-    
-    
-        
-
-     # delete files.
-    os.remove(os.path.join('/tmp', 'world.sql.gz'))
+    # delete files.
+    # os.remove(os.path.join('/tmp', 'world.sql.gz'))
     # # ダウンロードを実行
     # urllib.request.urlretrieve(
     #     'https://downloads.mysql.com/docs/world.sql.gz'
@@ -85,4 +84,3 @@ def lambda_handler(event, context):
     # # delete files.
     # os.remove(os.path.join('/tmp', 'world.sql.gz'))
 
-    return
